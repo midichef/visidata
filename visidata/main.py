@@ -342,6 +342,13 @@ def main_vd():
                 vd.editline = lambda *args, vd=vd, **kwargs: visidata.VisiData.editline(vd, *args, **kwargs)
                 vd.execAsync = lambda *args, vd=vd, **kwargs: visidata.VisiData.execAsync(vd, *args, **kwargs)
                 vd.sheets[0].rows = visidata.UNLOADED
+# test whether the sheet exists
+#                if (len(vd.sheets) > 0):
+#                    vd.sheets[0].rows = visidata.UNLOADED
+# or set all the sheets to unloaded, not just the first?
+#                 for s in vd.sheets:
+#                     s.rows = visidata.UNLOADED
+
                 run()
         else:
             vd.replay(vs)
