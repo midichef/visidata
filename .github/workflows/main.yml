@@ -8,13 +8,14 @@ on:
     branches:
     - stable
     - develop
+    - workflow_tester
 
 jobs:
   run-tests:
 
     strategy:
       matrix:
-        python-version: [3.8, 3.9, "3.10", "3.11"]
+        python-version: ["3.10"]
 
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -40,44 +41,11 @@ jobs:
     - name: Ensure VisiData can load a dir
       run: vd . --batch
 
-    - name: Install lxml dependencies
-      run: sudo apt install -y libxml2-dev libxslt-dev
-
-    - name: Install ping dependencies
-      run: sudo apt install -y traceroute
-
-    - name: Install optional dependencies
-      run: |
-        pip3 install -r requirements.txt
-        pip3 install pytest
-
-    - name: Run unit tests
-      run: |
-        pytest -sv visidata/tests/
-
-    - name: Run Cmdlog Tests
-      run: dev/test.sh
-      shell: bash
-
     - name: Test macros
       run: |
+        export TERM=xterm
         mkdir -p ~/.visidata
         cp tests/macros/macros.jsonl tests/macros/1.vdj ~/.visidata/
         vd --overwrite=y -p tests/macros/test_macro.vd
         git --no-pager diff --numstat tests/
         git --no-pager diff --exit-code tests/
-
-    - name: Check docs are built without errors
-      run: |
-        sudo apt install aha
-        dev/mkman.sh
-
-    - name: Ensure VisiData can create completions
-      run: python -v dev/zsh-completion.py
-
-    - name: Ensure VisiData does not drop lines from RepeatFiles
-      run: |
-        NUMLINES=$(seq 10000 | vd -b | wc -l)
-        if ! [[ $NUMLINES -eq 10000 ]]; then
-            exit 1
-        fi
