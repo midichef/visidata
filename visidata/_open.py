@@ -155,7 +155,7 @@ def openSource(vd, p, filetype=None, create=False, **kwargs):
         if '://' in p:
             vs = vd.openPath(Path(p), filetype=filetype)  # convert to Path and recurse
         elif p == '-':
-            if sys.stdin.isatty():
+            if vd.stdinSource.fptext.isatty():
                 vd.fail('cannot open stdin when it is a tty')
             vs = vd.openPath(vd.stdinSource, filetype=filetype)
         else:
