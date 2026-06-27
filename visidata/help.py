@@ -180,7 +180,10 @@ def openManPage(vd):
     with SuspendCurses():
         module_path = vd.pkg_resources_files(__name__.split('.')[0])
         if os.system(' '.join(['man', str(module_path/'man/vd.1')])) != 0:
-            vd.push(TextSheet('man_vd', source=module_path/'man/vd.txt'))
+            vd_txt = module_path/'man/vd.txt'
+            if not vd_txt.exists():
+                vd.fail('no man page found')
+            vd.push(TextSheet('man_vd', source=vd_txt.read_text()))
 
 
 # in VisiData, gCtrl+H refers to the man page
